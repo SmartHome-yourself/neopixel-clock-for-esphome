@@ -202,7 +202,7 @@ script:
   then:
     - light.turn_on:
         id: neopixel_ring
-        brightness: !lambda 'return id(brightness_sensor).state'
+        brightness: !lambda 'return id(brightness_sensor).state;'
     - lambda: |-
         int brightness = id(brightness_sensor).state;
         id(matrix_display).intensity(round(brightness/100*15));
