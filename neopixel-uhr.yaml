@@ -26,7 +26,9 @@ esp8266:
 ota:
   password: ${ota_password}
 
-
+dashboard_import:
+  package_import_url: github://SmartHome-yourself/esphome-neopixel-uhr/edit/main/neopixel-uhr.yaml
+                      
 
 wifi:
   ssid: ${wifi_ssid}
