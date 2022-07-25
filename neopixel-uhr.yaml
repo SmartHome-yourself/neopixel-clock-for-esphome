@@ -1,0 +1,208 @@
+substitutions:
+  devicename: neopixel-uhr
+  upper_devicename: "Neopixel Uhr"
+
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  
+  api_encryption_key: "+xGZsEOk6f+w1+8/m2cQBVRBZXBTBwh85Ivxl+ODUco="
+  ota_password: "09ddd653496c905385d373fa18b6c5a2"
+
+esphome:
+  name: ${devicename}
+  on_boot:
+    priority: 800
+    then:
+      - ds1307.read_time:
+          id: ds1307_time
+      - delay: 5ms
+      - light.turn_on: 
+          id: neopixel_ring
+          effect: "Uhr"
+
+esp8266:
+  board: d1_mini_pro
+
+ota:
+  password: ${ota_password}
+
+
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_password}
+
+  ap:
+    ssid: ${devicename} Hotspot
+    password: "mySuperSecretPassword"
+
+captive_portal:
+logger:
+
+api:
+  encryption:
+    key: ${api_encryption_key}
+    
+  services:
+    - service: write_text
+      variables:
+        text: string
+      then:
+        - globals.set:
+            id: matrix_text
+            value: !lambda 'return text;'
+        - delay: 20s
+        - globals.set:
+            id: matrix_text
+            value: !lambda 'return "";'
+
+
+
+#----------------------------
+#   Globale Variablen
+#----------------------------
+globals:
+  - id: matrix_text
+    type: std::string
+    restore_value: no
+    initial_value: ''
+
+
+
+#--------------
+#   RTC
+#--------------
+i2c:
+  id: i2c_bus
+  sda: D2
+  scl: D1
+  scan: true
+  frequency: 50kHz
+
+time:
+  - platform: ds1307
+    update_interval: never
+    id: ds1307_time
+    
+  - platform: homeassistant
+    on_time_sync:
+      then:
+        ds1307.write_time: 
+          id: ds1307_time
+
+
+
+#----------------------------
+#   Helligkeitssensor
+#----------------------------
+sensor:
+  - platform: adc
+    id: brightness_sensor
+    pin: A0
+    name: ${upper_devicename} Helligkeitssensor
+    update_interval: 30s
+    filters:
+      - calibrate_linear:
+          - 0.0 -> 0
+          - 10.0 -> 100
+    on_value:
+      then:
+        - script.execute: refresh_brightness
+
+#----------------------------
+#   LED Matrix (MAX7219)
+#----------------------------
+font:
+  - file: "pixelmix.ttf"
+    id: digit_font
+    size: 8
+
+spi:
+  clk_pin: D5
+  mosi_pin: D7
+
+display:
+  - platform: max7219digit
+    id: matrix_display
+    cs_pin: D6
+    num_chips: 4
+    intensity: 10
+    scroll_enable: true
+    scroll_mode: CONTINUOUS
+    scroll_speed: 120ms
+    scroll_delay: 3s
+    scroll_dwell: 22s
+    # Wenn Infotext vorhanden ist, diesen anzeigen. 
+    # Ansonsten Datum auf Matrix ausgeben
+    lambda: |-
+      if(strlen(id(matrix_text).c_str()) > 0){
+        id(matrix_display).printf(0, 0, id(digit_font), " %s . | .  ", id(matrix_text).c_str());
+      } else {
+        id(matrix_display).strftime(0, 0, id(digit_font), "%d.%m", id(ds1307_time).now());
+      }
+
+
+
+#----------------------------
+#   Neopixel Ring LEDs
+#----------------------------
+light:
+  - platform: neopixelbus
+    id: neopixel_ring
+    name: ${upper_devicename} LED-Ring
+    pin: D8
+    num_leds: 60
+    variant: WS2811
+    type: GRBW
+
+    effects:
+      - addressable_rainbow:
+          name: "Rainbow"
+          speed: 10
+          width: 50
+    
+      - addressable_lambda:
+          name: "Uhr"
+          update_interval: 16ms
+          lambda: |-
+            auto time = id(ds1307_time).now();
+
+            int hour = time.hour>12 ? time.hour-12 : time.hour;
+            int minute = time.minute;
+            int second = time.second;
+          
+            hour = (hour * 5) + ceil(minute/20);
+
+            it.range(0, 60) = Color::BLACK;
+            
+            it[hour>1?hour-2:59-(hour-2)] = ESPColor(64,0,0);
+            it[hour>0?hour-1:59] = ESPColor(128,0,0);
+            it[hour] = ESPColor(255,0,0);
+            it[hour<59?hour+1:0] = ESPColor(128,0,0);
+            it[hour<58?hour+2:hour+2-59] = ESPColor(64,0,0);
+            
+            it[minute>0 ? minute-1 : 59] = ESPColor(128,64,0);
+            it[minute] = ESPColor(255,128,0);
+            it[minute<59 ? minute+1 : 0] = ESPColor(128,64,0);
+
+            it[second] = ESPColor(128,128,0);
+            
+            delay(10);
+
+
+
+
+
+#----------------------------
+#   Scripts
+#----------------------------
+script:
+  id: refresh_brightness
+  then:
+    - light.turn_on:
+        id: neopixel_ring
+        brightness: !lambda 'return id(brightness_sensor).state'
+    - lambda: |-
+        int brightness = id(brightness_sensor).state;
+        id(matrix_display).intensity(round(brightness/100*15));
+
