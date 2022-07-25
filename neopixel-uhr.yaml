@@ -1,5 +1,5 @@
 #substitutions:
-#  devicename: neopixel-uhr
+#  devicename: neopixel-clock-for-esphome
 #  upper_devicename: "Neopixel Uhr"
 #
 #  wifi_ssid: !secret wifi_ssid
