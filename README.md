@@ -2,10 +2,12 @@
 Neopixel RGB-LED Uhr mit LED-Matrix-Display
 
 
+
 ## Funktionen
 Die Uhr gleicht die Uhrzeit mit dem Home Assistant Server ab und hält die Uhrzeit über eine RTC.  
 Die LED-Matrix zeigt das aktuelle Datum an.  
 Über einen Serviceaufruf der durch das einbinden der Uhr in Home Assistant zur Verfügung gestellt wird können Statusmeldungen auf der LED-Matrix ausgegeben werden. Die Texte werden, sobald sie zu lang für das Display sind, automatisch als durchlaufender Text angezeigt. 
+
 
 
 ## Projekt Code
