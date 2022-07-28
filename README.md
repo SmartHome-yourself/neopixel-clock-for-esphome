@@ -8,15 +8,6 @@ Die LED-Matrix zeigt das aktuelle Datum an.
 Über einen Serviceaufruf der durch das einbinden der Uhr in Home Assistant zur Verfügung gestellt wird können Statusmeldungen auf der LED-Matrix ausgegeben werden. Die Texte werden, sobald sie zu lang für das Display sind, automatisch als durchlaufender Text angezeigt. 
 
 
-## Service
-Um einen Text von Home Assistant aus auf der Uhr auszugeben, sähe ein Serviceaufruf wie folgt aus:
-```
-service: esphome.neopixel_uhr_write_text
-data:
-  text: info text
-```
-
-
 ## Projekt Code
 Im ESPHome Projekt müssen nur die Substitutions angegeben und das Package geladen werden.
 
@@ -39,3 +30,13 @@ substitutions:
 packages:
   neopixel_uhr_package: github://SmartHome-yourself/esphome-neopixel-uhr/neopixel-uhr.yaml@main
 ```
+
+
+## Service
+Um einen Text von Home Assistant aus auf der Uhr auszugeben, sähe ein Serviceaufruf wie folgt aus:
+```
+service: esphome.neopixel_uhr_write_text
+data:
+  text: info text
+```
+
