@@ -41,18 +41,25 @@ wifi:
 captive_portal:
 logger:
 
+
 api:
   encryption:
-    key: ${api_encryption_key}
-    
+    key: "99xlZAKGxtHBJYZzZ3Tee9t5s4yEwKlOS0ZBIOOCQOs="
   services:
     - service: write_text
       variables:
         text: string
       then:
+        - light.turn_on: 
+            id: neopixel_ring
+            effect: "Notify Animation"
         - globals.set:
             id: matrix_text
             value: !lambda 'return text;'
+        - delay: 5s
+        - light.turn_on: 
+            id: neopixel_ring
+            effect: ${uhr_animation}
         - delay: 20s
         - globals.set:
             id: matrix_text
@@ -67,6 +74,10 @@ globals:
     type: std::string
     restore_value: no
     initial_value: ''
+  - id: anim_pos
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 
 
@@ -92,6 +103,7 @@ time:
           id: ds1307_time
 
 
+
 #----------------------------
 #   Helligkeitssensor
 #----------------------------
@@ -99,16 +111,15 @@ sensor:
   - platform: adc
     id: brightness_sensor
     pin: A0
-    name: ${upper_devicename} Helligkeitssensor
-    update_interval: 30s
+    name: ${friendly_name} Helligkeitssensor
+    update_interval: 5s
     filters:
       - calibrate_linear:
-          - 0.0 -> 0
+          - 0.0 -> ${minimum_brightness}
           - 10.0 -> 100
     on_value:
       then:
         - script.execute: refresh_brightness
-
 
 #----------------------------
 #   LED Matrix (MAX7219)
@@ -135,9 +146,11 @@ display:
     scroll_dwell: 22s
     # Wenn Infotext vorhanden ist, diesen anzeigen. 
     # Ansonsten Datum auf Matrix ausgeben
+    # id(matrix_display).printf(0, 0, id(digit_font), " %s . | .  ", id(matrix_text).c_str());
+    # it.print(0,0, id(digit_font), id(matrix_text).c_str());
     lambda: |-
       if(strlen(id(matrix_text).c_str()) > 0){
-        id(matrix_display).printf(0, 0, id(digit_font), " %s . | .  ", id(matrix_text).c_str());
+        it.printf(0, 0, id(digit_font), " %s - - - ", id(matrix_text).c_str());
       } else {
         id(matrix_display).strftime(0, 0, id(digit_font), "%d.%m", id(ds1307_time).now());
       }
@@ -150,20 +163,21 @@ display:
 light:
   - platform: neopixelbus
     id: neopixel_ring
-    name: ${upper_devicename} LED-Ring
+    name: ${friendly_name} LED-Ring
     pin: D8
     num_leds: 60
     variant: WS2811
     type: GRBW
+    default_transition_length: 3s
 
     effects:
       - addressable_rainbow:
           name: "Rainbow"
-          speed: 10
+          speed: 20
           width: 50
     
       - addressable_lambda:
-          name: "Uhr"
+          name: "Uhr1"
           update_interval: 16ms
           lambda: |-
             auto time = id(ds1307_time).now();
@@ -190,6 +204,68 @@ light:
             
             delay(10);
 
+      - addressable_lambda:
+          name: "Uhr2"
+          update_interval: 16ms
+          lambda: |-
+            static int last_second = 0;
+            static int sec_bright = 255;
+            
+            auto time = id(ds1307_time).now();
+  
+            int hour = time.hour>12 ? time.hour-12 : time.hour;
+            int minute = time.minute;
+            int second = time.second;
+          
+            if(second != last_second){
+              last_second = second;
+              sec_bright = 255;
+            }
+          
+            hour = (hour * 5) + ceil(minute/20);
+
+            it.range(0, 60) = Color::BLACK;
+            
+            it[hour>0?hour-1:59] = ESPColor(0,96,0);
+            it[hour] = ESPColor(0,255,0);
+            it[hour<59?hour+1:0] = ESPColor(0,96,0);
+
+            it[minute] = ESPColor(0,0,255);
+
+            it[second] = ESPColor(255-sec_bright,0,0);
+            it[second>0?second-1:59] = ESPColor(sec_bright,0,0);
+            
+            delay(1);
+            
+            if(sec_bright > 10){
+              sec_bright = sec_bright - 10;
+            } else {
+              sec_bright = 0;
+            }
+          
+      - addressable_lambda:
+          name: "Notify Animation"
+          update_interval: 160ms
+          lambda: |-
+            static ESPColor color1, color2;
+
+            if (initial_run) {
+              id(anim_pos) = 0;
+              color1 = ESPColor::random_color();
+              color2 = ESPColor::random_color();
+            }
+            
+            it[id(anim_pos)] = color1;
+            it[59-id(anim_pos)] = color2;
+            
+            if(id(anim_pos) >= 59){
+              id(anim_pos) = 0;
+              color1 = ESPColor::random_color();
+              color2 = ESPColor::random_color();
+
+            } else {
+              id(anim_pos)++;
+            }
 
 
 
@@ -198,12 +274,12 @@ light:
 #   Scripts
 #----------------------------
 script:
-  id: refresh_brightness
-  then:
-    - light.turn_on:
-        id: neopixel_ring
-        brightness: !lambda 'return id(brightness_sensor).state;'
-    - lambda: |-
-        int brightness = id(brightness_sensor).state;
-        id(matrix_display).intensity(round(brightness/100*15));
+  - id: refresh_brightness
+    then:
+      - light.turn_on:
+          id: neopixel_ring
+          brightness: !lambda 'return id(brightness_sensor).state/100;'
+      - lambda: |-
+          int brightness = id(brightness_sensor).state;
+          id(matrix_display).intensity(round(brightness/100*15));
 
