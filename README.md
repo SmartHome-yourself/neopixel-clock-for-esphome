@@ -24,10 +24,7 @@ substitutions:
   # WLAN Zugangsdaten
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
-  
-  # Generiere deinen eigenen encryption key unter: https://esphome.io/components/api.html
-  api_encryption_key: "+xGZsEOk6f+w1+8/m2cQBVRBZXBTBwh85Ivxl+ODUco="
-  
+
   # Verfügbare Animationen:
   # - Uhr1
   # - Uhr2
@@ -41,6 +38,16 @@ packages:
   neopixel_uhr_package: github://SmartHome-yourself/esphome-neopixel-uhr/neopixel-uhr.yaml@main
 ```
 
+Wer jetzt noch seine eigenen Sicherheitsschlüssel für die API-Verschlüsselung und/oder OTA verwenden möchte kann diese wie gewohnt einfach angeben und somit den Standard überschreiben:
+```
+# Generiere einen eigenen encryption key unter: https://esphome.io/components/api.html
+api:
+  encryption:
+    key: "+xGZsEOk6f+w1+8/m2cQBVRBZXBTBwh85Ivxl+ODUco="
+
+ota:
+  password: "HierDeinOTA-PW"
+```
 
 ## Service
 Um einen Text von Home Assistant aus auf der Uhr auszugeben, sieht ein Serviceaufruf wie folgt aus:
