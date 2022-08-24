@@ -15,27 +15,35 @@ Im ESPHome Projekt müssen nur die Substitutions angegeben und das Package gelad
 
 ```
 substitutions:
-  # devicename should be the same like your yaml-filename
+  # Der devicename muss dem Dateinamen der YAML-Datei entsprechen
   devicename: shys-neopixel-uhr
+  
+  # Der upper_devicename ist der Anzeige-Name und frei wählbar
   upper_devicename: "Neopixel Uhr"
 
+  # WLAN Zugangsdaten
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   
-  # get your new encryption key under: https://esphome.io/components/api.html
+  # Generiere deinen eigenen encryption key unter: https://esphome.io/components/api.html
   api_encryption_key: "+xGZsEOk6f+w1+8/m2cQBVRBZXBTBwh85Ivxl+ODUco="
   
-  # change yout ota password
-  ota_password: "09ddd653496c905385d373fa18b6c5a2"
+  # Verfügbare Animationen:
+  # - Uhr1
+  # - Uhr2
+  uhr_animation: "Uhr2"
   
-# load clock project
+  # Minimale Helligkeit der LEDs
+  minimum_brightness: "30"
+  
+# Neopixel-Uhr als Package laden
 packages:
   neopixel_uhr_package: github://SmartHome-yourself/esphome-neopixel-uhr/neopixel-uhr.yaml@main
 ```
 
 
 ## Service
-Um einen Text von Home Assistant aus auf der Uhr auszugeben, sähe ein Serviceaufruf wie folgt aus:
+Um einen Text von Home Assistant aus auf der Uhr auszugeben, sieht ein Serviceaufruf wie folgt aus:
 ```
 service: esphome.neopixel_uhr_write_text
 data:
