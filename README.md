@@ -6,10 +6,9 @@ Neopixel RGB-LED Uhr mit LED-Matrix-Display
 ## Funktionen
 Die Uhr gleicht die Uhrzeit mit dem Home Assistant Server ab und hält die Uhrzeit über eine RTC.  
 Die LED-Matrix zeigt das aktuelle Datum an.  
-Über einen Serviceaufruf der durch das einbinden der Uhr in Home Assistant zur Verfügung gestellt wird können Statusmeldungen auf der LED-Matrix ausgegeben werden. Die Texte werden, sobald sie zu lang für das Display sind, automatisch als durchlaufender Text angezeigt. 
-
-
-
+Über einen Serviceaufruf der durch das einbinden der Uhr in Home Assistant zur Verfügung gestellt wird können Statusmeldungen auf der LED-Matrix ausgegeben werden. Die Texte werden, sobald sie zu lang für das Display sind, automatisch als durchlaufender Text angezeigt.  
+  
+  
 ## Projekt Code
 Im ESPHome Projekt müssen nur die Substitutions angegeben und das Package geladen werden.
 
@@ -36,7 +35,7 @@ substitutions:
 # Neopixel-Uhr als Package laden
 packages:
   neopixel_uhr_package: github://SmartHome-yourself/esphome-neopixel-uhr/neopixel-uhr.yaml@main
-```
+```  
   
 ## API-Encryption
 Wer jetzt noch seine eigenen Sicherheitsschlüssel für die API-Verschlüsselung und/oder OTA verwenden möchte kann diese wie gewohnt einfach angeben und somit den Standard überschreiben:
@@ -50,7 +49,7 @@ ota:
   password: "HierDeinOTA-PW"
 ```
 
-Der Standard API-Encryption Key lautet: **99xlZAKGxtHBJYZzZ3Tee9t5s4yEwKlOS0ZBIOOCQOs=**
+Der Standard API-Encryption Key lautet: **99xlZAKGxtHBJYZzZ3Tee9t5s4yEwKlOS0ZBIOOCQOs=**  
   
 ## Service
 Um einen Text von Home Assistant aus auf der Uhr auszugeben, sieht ein Serviceaufruf wie folgt aus:
@@ -60,6 +59,18 @@ data:
   text: info text
 ```
 _Dabei entspricht im Service-Namen das "neopixel_uhr" dem Geräte-Namen welcher unter **upper_devicename** in den Subscriptions angegeben wurde._
+  
+  
+## Betrieb ohne Home Assistant
+Generell ist die Uhr natürlich darauf ausgelegt in Kombination mit Home Assistant betrieben zu werden. 
+Sie kann aber auch standalone genutzt werden.
+Dabei ist aber zu beachten, dass im normalfall der ESP alle 15 Minuten neu startet, sofern sich kein Gerät über die API mit ihm verbindet.
+Um diesen Neustart zu vermeiden muss unter dem API-Eintrag der Parameter **reboot_timeout** auf 0s gesetzt werden.
+```
+api:
+  reboot_timeout: 0s
+```
+  
   
   
 
