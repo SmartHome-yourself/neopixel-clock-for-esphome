@@ -60,7 +60,14 @@ data:
 ```
 _Dabei entspricht im Service-Namen das "neopixel_uhr" dem Geräte-Namen welcher unter **upper_devicename** in den Subscriptions angegeben wurde._
   
+
+## Benötigte Schriftart "Pixelmix"
+Das LED-Display benötigt noch die Schriftart Pixelmix. Diese könnt Ihr unter folgendem Link herunterladen:  
+https://www.dafont.com/pixelmix.font  
   
+Kopiert die ttf-Datei anschließend in euer ESPHome-Verzeichnis (Bei Home Assistant liegt dies unter /config/esphome)
+
+
 ## Betrieb ohne Home Assistant
 Generell ist die Uhr natürlich darauf ausgelegt in Kombination mit Home Assistant betrieben zu werden. 
 Sie kann aber auch standalone genutzt werden.
