@@ -5,8 +5,8 @@
 #  wifi_ssid: !secret wifi_ssid
 #  wifi_password: !secret wifi_password
 #  
-#  api_encryption_key: "+xGZsEOk6f+w1+8/m2cQBVRBZXBTBwh85Ivxl+ODUco="
-#  ota_password: "09ddd653496c905385d373fa18b6c5a2"
+#  uhr_animation: "Uhr2"
+#  minimum_brightness: "30"
 
 
 esphome:
