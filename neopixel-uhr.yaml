@@ -54,7 +54,7 @@ api:
         - globals.set:
             id: matrix_text
             value: !lambda 'return text;'
-        - delay: 5s
+        - delay: 7s
         - light.turn_on: 
             id: neopixel_ring
             effect: ${uhr_animation}
@@ -243,7 +243,7 @@ light:
 
       - addressable_lambda:
           name: "Notify Animation"
-          update_interval: 160ms
+          update_interval: 100ms
           lambda: |-
             static ESPColor color1, color2;
 
