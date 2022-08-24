@@ -37,7 +37,8 @@ substitutions:
 packages:
   neopixel_uhr_package: github://SmartHome-yourself/esphome-neopixel-uhr/neopixel-uhr.yaml@main
 ```
-
+  
+## API-Encryption
 Wer jetzt noch seine eigenen Sicherheitsschlüssel für die API-Verschlüsselung und/oder OTA verwenden möchte kann diese wie gewohnt einfach angeben und somit den Standard überschreiben:
 ```
 # Generiere einen eigenen encryption key unter: https://esphome.io/components/api.html
@@ -49,6 +50,8 @@ ota:
   password: "HierDeinOTA-PW"
 ```
 
+Der Standard API-Encryption Key lautet: **99xlZAKGxtHBJYZzZ3Tee9t5s4yEwKlOS0ZBIOOCQOs=**
+  
 ## Service
 Um einen Text von Home Assistant aus auf der Uhr auszugeben, sieht ein Serviceaufruf wie folgt aus:
 ```
