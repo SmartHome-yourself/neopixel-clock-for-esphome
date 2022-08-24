@@ -18,8 +18,8 @@ substitutions:
   # Der devicename muss dem Dateinamen der YAML-Datei entsprechen
   devicename: shys-neopixel-uhr
   
-  # Der upper_devicename ist der Anzeige-Name und frei wählbar
-  upper_devicename: "Neopixel Uhr"
+  # Der friendly_name ist der Anzeige-Name und frei wählbar
+  friendly_name: "Neopixel Uhr"
 
   # WLAN Zugangsdaten
   wifi_ssid: !secret wifi_ssid
