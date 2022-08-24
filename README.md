@@ -56,4 +56,7 @@ service: esphome.neopixel_uhr_write_text
 data:
   text: info text
 ```
+_Dabei entspricht im Service-Namen das "neopixel_uhr" dem Geräte-Namen welcher unter **upper_devicename** in den Subscriptions angegeben wurde._
+  
+  
 
