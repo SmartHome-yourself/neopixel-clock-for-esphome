@@ -165,7 +165,7 @@ light:
     pin: D8
     num_leds: 60
     variant: WS2811
-    type: GRBW
+    type: GRB
     default_transition_length: 3s
     
     effects:
