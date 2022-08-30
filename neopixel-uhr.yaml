@@ -188,17 +188,17 @@ light:
 
             it.range(0, 60) = Color::BLACK;
 
-            it[hour>1?hour-2:59-(hour-2)] = ESPColor(64,0,0);
-            it[hour>0?hour-1:59] = ESPColor(128,0,0);
-            it[hour] = ESPColor(255,0,0);
-            it[hour<59?hour+1:0] = ESPColor(128,0,0);
-            it[hour<58?hour+2:hour+2-59] = ESPColor(64,0,0);
+            it[hour>1?hour-2:59-(hour-2)] = ESPColor(0,64,0);
+            it[hour>0?hour-1:59] = ESPColor(0,128,0);
+            it[hour] = ESPColor(0,255,0);
+            it[hour<59?hour+1:0] = ESPColor(0,128,0);
+            it[hour<58?hour+2:hour+2-59] = ESPColor(0,64,0);
 
-            it[minute>0 ? minute-1 : 59] = ESPColor(128,64,0);
-            it[minute] = ESPColor(255,128,0);
-            it[minute<59 ? minute+1 : 0] = ESPColor(128,64,0);
+            it[minute>0 ? minute-1 : 59] = ESPColor(0,0,128);
+            it[minute] = ESPColor(0,0,255);
+            it[minute<59 ? minute+1 : 0] = ESPColor(0,0,128);
 
-            it[second] = ESPColor(128,128,0);
+            it[second] = ESPColor(255,0,0);
 
             delay(10);
 
