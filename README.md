@@ -14,12 +14,12 @@ Die LED-Matrix zeigt das aktuelle Datum an.
 https://www.pcbway.com/project/shareproject/Neopixel_Ring_RGB_Clock_with_ESPHome_for_Home_Assistant_288328e5.html  
 
 ## Bauteile
-D1 Mini: https://amzn.to/3CFKHGM *
-Neopixel-Ring: https://amzn.to/3B1SnSB *
-TinyRTC: https://amzn.to/3AYha9P *
-LED-Matrix Display: https://amzn.to/3cvVMzo *
-5V Netzteil: https://amzn.to/3ebv0wV *
-5V Buchse: https://amzn.to/3e7MWIC *
+D1 Mini: https://amzn.to/3CFKHGM *  
+Neopixel-Ring: https://amzn.to/3B1SnSB *  
+TinyRTC: https://amzn.to/3AYha9P *  
+LED-Matrix Display: https://amzn.to/3cvVMzo *  
+5V Netzteil: https://amzn.to/3ebv0wV *  
+5V Buchse: https://amzn.to/3e7MWIC *  
 
 ## 3D-Druck Dateien für das Gehäuse:
 https://www.thingiverse.com/thing:5487026  
