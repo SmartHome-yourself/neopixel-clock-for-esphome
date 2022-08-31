@@ -1,6 +1,8 @@
 # esphome-neopixel-uhr
 Neopixel RGB-LED Uhr mit LED-Matrix-Display
 
+![uhr](https://user-images.githubusercontent.com/705724/187570018-8660f432-6f98-4261-a00e-524f9fec9bc6.jpg)
+
 
 
 ## Funktionen
