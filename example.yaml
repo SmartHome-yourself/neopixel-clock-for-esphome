@@ -1,0 +1,26 @@
+substitutions:
+  # Der devicename muss dem Dateinamen der YAML-Datei entsprechen
+  devicename: shys-neopixel-uhr
+  
+  # Der friendly_name ist der Anzeige-Name und frei wählbar
+  friendly_name: "Neopixel Uhr"
+
+  # WLAN Zugangsdaten
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+
+  # Verfügbare Animationen:
+  # - Uhr1
+  # - Uhr2
+  uhr_animation: "Uhr2"
+  
+  # Minimale Helligkeit der LEDs
+  minimum_brightness: "30"
+  
+# Neopixel-Uhr als Package laden
+packages:
+  neopixel_uhr_package: github://SmartHome-yourself/esphome-neopixel-uhr/neopixel-uhr.yaml@main
+
+ota:
+  platform: esphome
+  password: !secret ota_password
