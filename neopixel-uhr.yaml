@@ -25,7 +25,8 @@ esp8266:
   board: d1_mini
 
 ota:
-  password: "09ddd653496c905385d373fa18b6c5a2"
+  platform: esphome
+  password: !secret ota_password
 
 wifi:
   ssid: ${wifi_ssid}
@@ -42,26 +43,24 @@ logger:
 
 api:
   encryption:
-    key: "99xlZAKGxtHBJYZzZ3Tee9t5s4yEwKlOS0ZBIOOCQOs="
-  services:
-    - service: write_text
+    key: !secret api_encryption_key
+  actions:
+    - action: write_text
       variables:
-        text: string
+        message_text: string
       then:
         - light.turn_on: 
             id: neopixel_ring
             effect: "Notify Animation"
-        - globals.set:
-            id: matrix_text
-            value: !lambda 'return text;'
+        - lambda: |-
+            id(matrix_text) = message_text;
         - delay: 7s
         - light.turn_on: 
             id: neopixel_ring
             effect: ${uhr_animation}
         - delay: 20s
-        - globals.set:
-            id: matrix_text
-            value: !lambda 'return "";'
+        - lambda: |-
+            id(matrix_text).clear();
 
 
 #----------------------------
@@ -123,7 +122,7 @@ sensor:
 #   LED Matrix (MAX7219)
 #----------------------------
 font:
-  - file: "pixelmix.ttf"
+  - file: "gfonts://Roboto Mono"
     id: digit_font
     size: 8
 
@@ -188,17 +187,17 @@ light:
 
             it.range(0, 60) = Color::BLACK;
 
-            it[hour>1?hour-2:59-(hour-2)] = ESPColor(0,128,0);
-            it[hour>0?hour-1:59] = ESPColor(0,196,0);
-            it[hour] = ESPColor(0,255,0);
-            it[hour<59?hour+1:0] = ESPColor(0,196,0);
-            it[hour<58?hour+2:hour+2-59] = ESPColor(0,128,0);
+            it[hour>1?hour-2:59-(hour-2)] = Color(0,128,0);
+            it[hour>0?hour-1:59] = Color(0,196,0);
+            it[hour] = Color(0,255,0);
+            it[hour<59?hour+1:0] = Color(0,196,0);
+            it[hour<58?hour+2:hour+2-59] = Color(0,128,0);
 
-            it[minute>0 ? minute-1 : 59] = ESPColor(0,0,128);
-            it[minute] = ESPColor(0,0,255);
-            it[minute<59 ? minute+1 : 0] = ESPColor(0,0,128);
+            it[minute>0 ? minute-1 : 59] = Color(0,0,128);
+            it[minute] = Color(0,0,255);
+            it[minute<59 ? minute+1 : 0] = Color(0,0,128);
 
-            it[second] = ESPColor(255,0,0);
+            it[second] = Color(255,0,0);
 
             delay(10);
 
@@ -224,14 +223,14 @@ light:
 
             it.range(0, 60) = Color::BLACK;
 
-            it[hour>0?hour-1:59] = ESPColor(0,96,0);
-            it[hour] = ESPColor(0,255,0);
-            it[hour<59?hour+1:0] = ESPColor(0,96,0);
+            it[hour>0?hour-1:59] = Color(0,96,0);
+            it[hour] = Color(0,255,0);
+            it[hour<59?hour+1:0] = Color(0,96,0);
 
-            it[minute] = ESPColor(0,0,255);
+            it[minute] = Color(0,0,255);
 
-            it[second] = ESPColor(255-sec_bright,0,0);
-            it[second>0?second-1:59] = ESPColor(sec_bright,0,0);
+            it[second] = Color(255-sec_bright,0,0);
+            it[second>0?second-1:59] = Color(sec_bright,0,0);
 
             delay(1);
 
@@ -245,12 +244,12 @@ light:
           name: "Notify Animation"
           update_interval: 100ms
           lambda: |-
-            static ESPColor color1, color2;
+            static Color color1, color2;
 
             if (initial_run) {
               id(anim_pos) = 0;
-              color1 = ESPColor::random_color();
-              color2 = ESPColor::random_color();
+              color1 = Color::random_color();
+              color2 = Color::random_color();
             }
 
             it[id(anim_pos)] = color1;
@@ -258,8 +257,8 @@ light:
 
             if(id(anim_pos) >= 59){
               id(anim_pos) = 0;
-              color1 = ESPColor::random_color();
-              color2 = ESPColor::random_color();
+              color1 = Color::random_color();
+              color2 = Color::random_color();
 
             } else {
               id(anim_pos)++;
@@ -280,4 +279,3 @@ script:
       - lambda: |-
           int brightness = id(brightness_sensor).state;
           id(matrix_display).intensity(round(brightness/100*15));
-
